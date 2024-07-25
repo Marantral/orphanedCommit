@@ -114,6 +114,8 @@ class orphane():
             if req.status_code == 403 or req.status_code == 429:
                 print("You have been rate limited by Github.")
                 self.rate_limit = True
+                with open(self.args.output, 'w') as file:
+                    file.write(self.output_data)
                 sys.exit()
 
                 
