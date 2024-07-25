@@ -102,19 +102,22 @@ class orphane():
                 json_data = req.json()
                 sha_orphaned_commit = json_data['sha']
                 author = str(json_data['commit']['author'])
-                print(req.headers)
+                print(req.headers['X-RateLimit-Remaining'])
                 if sha_orphaned_commit not in self.commit_check:
                     print(self.BOLD + self.ERROR + f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information:")
                     print({author})
-                    print("\n-------------------\n" + self.ENDCf)
+                    print("\n-------------------\n" + self.ENDC)
                     self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n-------------------\n"
             except:
                 pass
         if req.status_code == 403 or req.status_code == 429:
-            print("\n\nYou have been rate limited by Github. Sleeping for 30 seconds-----\n\n")
-            sleep(30)
+            print("\n\nYou have been rate limited by Github. Sleeping for 2 Minutes-----\n\n")
+            sleep(120)
             with open(self.args.output, 'w') as file:
-                file.write(self.output_data)                      
+                file.write(self.output_data) 
+        if req.headers['X-RateLimit-Remaining'] <= 50:
+            print("Rate limiting is about to be active! Sleeping for 1 minute!")
+            sleep(60)                    
         bar.next()
 
 
@@ -134,6 +137,7 @@ class orphane():
         print(self.GREEN + self.marantral + self.ENDC)
         bar = IncrementalBar('Scanning for Orphaned Commits:', max=65536)
         for item in self.check_list[self.args.line:]:
+            sleep(1)
             self.scan(item)
         bar.finish()
         with open(self.args.output, 'w') as file:
