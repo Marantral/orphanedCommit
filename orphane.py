@@ -33,21 +33,7 @@ class orphane():
     repo = args.repo 
     header_add = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36", "Authorization": f"Bearer {api_token}"
                 , "X-GitHub-Api-Version": "2022-11-28",  "Accept": "application/vnd.github+json"}
-    def scan(self,item):
-        check_url = f"https://api.github.com/repos/{repo}/commits/{item}"
-        req = requests.get(check_url, headers=self.header_add)
-        if req.status_code == 200:
-            try:
-                json_data = req.json()
-                sha_orphaned_commit = json_data['sha']
-                author = json_data['commit']['author']
-                files = json_data['commit']['files']
-                if sha_orphaned_commit not in self.commit_check:
-                    print(f"Orphaned Commit Identified: https://github.com/{repo}/commit/{sha_orphaned_commit}")
-                self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n"\
-                " File information: \n {files} \n -------------------\n"
-            except:
-                pass
+    
 
 
     commit_check = []
@@ -79,8 +65,12 @@ class orphane():
             try:
                 json_data = req.json()
                 sha_orphaned_commit = json_data['sha']
+                author = json_data['commit']['author']
+                files = json_data['commit']['files']
                 if sha_orphaned_commit not in self.commit_check:
                     print(f"Orphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}")
+                self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n"\
+                " File information: \n {files} \n -------------------\n"
             except:
                 pass
 
