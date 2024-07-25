@@ -1,12 +1,10 @@
 import requests
 import concurrent.futures
-import json
 import configparser
 import os
 import argparse
 from progress.bar import IncrementalBar
 from datetime import datetime 
-import sys
 from time import sleep 
 
 
@@ -105,7 +103,7 @@ class orphane():
                 author = json_data['commit']['author']
                 
                 if sha_orphaned_commit not in self.commit_check:
-                    print(f"Orphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}")
+                    print(BOLD + ERROR + f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n-------------------\n" + ENDCf)
                     self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n-------------------\n"
             except:
                 pass
