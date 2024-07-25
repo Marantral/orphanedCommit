@@ -74,6 +74,7 @@ class orphane():
     if req.status_code == 403 or req.status_code == 429:
         print(BOLD + ERROR + title + ENDC)        
         print(GREEN + marantral + ENDC)
+        print(req.headers)
         print("You have been rate limited by Github or have not added a valid api key in the config.ini file.")
         exit()
     json_data = req.json()
@@ -109,7 +110,9 @@ class orphane():
                 pass
         if req.status_code == 403 or req.status_code == 429:
             print("\n\nYou have been rate limited by Github. Sleeping for 30 seconds-----\n\n")
-            sleep(30)                        
+            sleep(30)
+            with open(self.args.output, 'w') as file:
+                file.write(self.output_data)                      
         bar.next()
 
 
