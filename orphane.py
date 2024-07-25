@@ -74,7 +74,7 @@ class orphane():
     if req.status_code == 403 or req.status_code == 429:
         print(BOLD + ERROR + title + ENDC)        
         print(GREEN + marantral + ENDC)
-        print(req.headers)
+        print(req.headers['X-RateLimit-Reset'])
         print("You have been rate limited by Github or have not added a valid api key in the config.ini file.")
         exit()
     json_data = req.json()
@@ -101,7 +101,7 @@ class orphane():
             try:
                 json_data = req.json()
                 sha_orphaned_commit = json_data['sha']
-                author = json_data['commit']['author']
+                author = str(json_data['commit']['author'])
                 
                 if sha_orphaned_commit not in self.commit_check:
                     print(self.BOLD + self.ERROR + f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n-------------------\n" + self.ENDCf)
