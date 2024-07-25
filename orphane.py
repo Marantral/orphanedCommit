@@ -103,7 +103,7 @@ class orphane():
                 author = json_data['commit']['author']
                 
                 if sha_orphaned_commit not in self.commit_check:
-                    print(BOLD + ERROR + f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n-------------------\n" + ENDCf)
+                    print(self.BOLD + self.ERROR + f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n-------------------\n" + self.ENDCf)
                     self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n-------------------\n"
             except:
                 pass
