@@ -108,7 +108,7 @@ class orphane():
                     files = json_data['files']
                     if sha_orphaned_commit not in self.commit_check:
                         print(f"Orphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}")
-                    self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n File information: \n {files} \n -------------------\n"
+                        self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n File information: \n {files} \n -------------------\n"
                 except:
                     pass
             if req.status_code == 403 or req.status_code == 429:
