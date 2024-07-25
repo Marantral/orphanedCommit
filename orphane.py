@@ -48,6 +48,8 @@ class orphane():
                           /_/  /_/\_,_/_//_/\__/_/  \___/_/_/  
 
                                         Version 1.0
+
+            !!!!!!!!!!!GO GET SOME COFFEE, THIS WILL TAKE A WHILE!!!!!!!!!!!
         """ 
     output_data = ''
     current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
@@ -136,7 +138,6 @@ class orphane():
         print(self.GREEN + self.marantral + self.ENDC)
         bar = IncrementalBar('Scanning for Orphaned Commits:', max=65536)
         for item in self.check_list[self.args.line:]:
-            sleep(1)
             self.scan(item)
         bar.finish()
         with open(self.args.output, 'w') as file:
