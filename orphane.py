@@ -105,7 +105,7 @@ class orphane():
                     json_data = req.json()
                     sha_orphaned_commit = json_data['sha']
                     author = json_data['commit']['author']
-                    files = json_data['commit']['files']
+                    files = json_data['files']
                     if sha_orphaned_commit not in self.commit_check:
                         print(f"Orphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}")
                     self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n File information: \n {files} \n -------------------\n"
