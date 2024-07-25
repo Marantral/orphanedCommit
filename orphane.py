@@ -95,7 +95,7 @@ class orphane():
     def main(self):
         global bar
 
-        bar = IncrementalBar('Deep Scanning Subdomains:', max=65536)
+        bar = IncrementalBar('Scanning for Orphaned Commits:', max=65536)
         print(self.BOLD + self.ERROR + r"""
  #####   ######   ######   ##   ##   ######  ######   #######  ######              ####    #####   ### ##   ### ##    ####     ######  
 #######  #######  #######  ##   ##  #######  #######  #######  #######            ######  #######  #######  #######    ##      ######  
