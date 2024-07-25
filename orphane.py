@@ -5,7 +5,7 @@ import configparser
 import os
 import argparse
 from tqdm import tqdm
-import datetime
+from datetime import datetime 
 
 
 
