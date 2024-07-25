@@ -58,7 +58,7 @@ class orphane():
             check = False
     
     def scan(self,item):
-        bar.next()
+        
         check_url = f"https://api.github.com/repos/{self.repo}/commits/{item}"
         req = requests.get(check_url, headers=self.header_add)
         if req.status_code == 200:
@@ -73,6 +73,7 @@ class orphane():
                 self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n File information: \n {files} \n -------------------\n"
             except:
                 pass
+        bar.next()
 
 
     check_list = []
@@ -85,7 +86,7 @@ class orphane():
     def main(self):
         global bar
 
-        bar = IncrementalBar('Scanning for Orphaned Commits:', max=65536)
+        
         print(self.BOLD + self.ERROR + r"""
  #####   ######   ######   ##   ##   ######  ######   #######  ######              ####    #####   ### ##   ### ##    ####     ######  
 #######  #######  #######  ##   ##  #######  #######  #######  #######            ######  #######  #######  #######    ##      ######  
@@ -115,6 +116,7 @@ class orphane():
 
                                         Version 1.0
         """ + self.ENDC)
+        bar = IncrementalBar('Scanning for Orphaned Commits:', max=65536)
         with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
             executor.map(self.scan, self.check_list)
         bar.finish()
