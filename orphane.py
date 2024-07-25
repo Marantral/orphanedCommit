@@ -58,6 +58,8 @@ class orphane():
                         help='What is the target  repository that you would like to enumerate?\n\tLike: marantral/orphanedCommit ')
     parser.add_argument('--output', '-o',type=str,  default=f"{current_datetime}_orphancommit.txt",
                         help="Output file name")
+    parser.add_argument('--line', '-l', type=int, default=0,
+                        help="Line last looked at within last search.")
     args = parser.parse_args()
     repo = args.repo 
     header_add = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36", "Authorization": f"Bearer {api_token}"
@@ -134,7 +136,7 @@ class orphane():
         print(self.GREEN + self.marantral + self.ENDC)
         bar = IncrementalBar('Scanning for Orphaned Commits:', max=65536)
         with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
-            executor.map(self.scan, self.check_list)
+            executor.map(self.scan, self.check_list[self.args.line:])
         bar.finish()
         with open(self.args.output, 'w') as file:
             file.write(self.output_data)
