@@ -108,7 +108,7 @@ class orphane():
             except:
                 pass
         if req.status_code == 403 or req.status_code == 429:
-            print("You have been rate limited by Github. Sleeping for 30 seconds")
+            print("\n\nYou have been rate limited by Github. Sleeping for 30 seconds-----\n\n")
             sleep(30)                        
         bar.next()
 
