@@ -102,9 +102,11 @@ class orphane():
                 json_data = req.json()
                 sha_orphaned_commit = json_data['sha']
                 author = str(json_data['commit']['author'])
-                
+                print(req.headers)
                 if sha_orphaned_commit not in self.commit_check:
-                    print(self.BOLD + self.ERROR + f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n-------------------\n" + self.ENDCf)
+                    print(self.BOLD + self.ERROR + f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information:")
+                    print({author})
+                    print("\n-------------------\n" + self.ENDCf)
                     self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n-------------------\n"
             except:
                 pass
