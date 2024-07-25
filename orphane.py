@@ -114,7 +114,7 @@ class orphane():
             sleep(120)
             with open(self.args.output, 'w') as file:
                 file.write(self.output_data) 
-        if 50 >= req.headers['X-RateLimit-Remaining']:
+        if 50 >= int(req.headers['X-RateLimit-Remaining']):
             print("Rate limiting is about to be active! Sleeping for 1 minute!")
             sleep(60)                    
         bar.next()
