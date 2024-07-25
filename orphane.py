@@ -51,6 +51,7 @@ class orphane():
                                         Version 1.0
         """ 
     output_data = ''
+    rate_limit = False
     current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     parser = argparse.ArgumentParser(description='Github Orphaned Enumeration tool')
     parser.add_argument('--repo', '-r', dest="repo", type=str, required=True,
@@ -93,24 +94,28 @@ class orphane():
     
     def scan(self,item):
         
-        check_url = f"https://api.github.com/repos/{self.repo}/commits/{item}"
-        req = requests.get(check_url, headers=self.header_add)
-        if req.status_code == 200:
-            print("found")
-            try:
-                json_data = req.json()
-                sha_orphaned_commit = json_data['sha']
-                author = json_data['commit']['author']
-                files = json_data['commit']['files']
-                if sha_orphaned_commit not in self.commit_check:
-                    print(f"Orphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}")
-                self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n File information: \n {files} \n -------------------\n"
-            except:
-                pass
-        if req.status_code == 403 or req.status_code == 429:
-            print("You have been rate limited by Github.")
-            exit()
-        bar.next()
+        if not self.rate_limit:
+            check_url = f"https://api.github.com/repos/{self.repo}/commits/{item}"
+            req = requests.get(check_url, headers=self.header_add)
+            if req.status_code == 200:
+                print("found")
+                try:
+                    json_data = req.json()
+                    sha_orphaned_commit = json_data['sha']
+                    author = json_data['commit']['author']
+                    files = json_data['commit']['files']
+                    if sha_orphaned_commit not in self.commit_check:
+                        print(f"Orphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}")
+                    self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n File information: \n {files} \n -------------------\n"
+                except:
+                    pass
+            if req.status_code == 403 or req.status_code == 429:
+                print("You have been rate limited by Github.")
+                self.rate_limit = True
+                exit()
+
+                
+            bar.next()
 
 
     check_list = []
