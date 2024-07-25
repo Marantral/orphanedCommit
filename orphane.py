@@ -41,7 +41,11 @@ class orphane():
 
     req = requests.get(commit_check_url, headers=header_add)
     row = 0
-    json_data = req.json() 
+    
+    if req.status_code == 403 or req.status_code == 429:
+        print("You have been rate limited by Github.")
+        exit()
+    json_data = req.json()
     try:
         sha = json_data[row]['sha']
         check = True
@@ -73,6 +77,9 @@ class orphane():
                 self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n File information: \n {files} \n -------------------\n"
             except:
                 pass
+        if req.status_code == 403 or req.status_code == 429:
+            print("You have been rate limited by Github.")
+            exit()
         bar.next()
 
 
