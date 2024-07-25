@@ -7,6 +7,7 @@ import argparse
 from progress.bar import IncrementalBar
 from datetime import datetime 
 import sys
+from time import sleep 
 
 
 ini_file = configparser.ConfigParser()
@@ -51,7 +52,6 @@ class orphane():
                                         Version 1.0
         """ 
     output_data = ''
-    rate_limit = False
     current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     parser = argparse.ArgumentParser(description='Github Orphaned Enumeration tool')
     parser.add_argument('--repo', '-r', dest="repo", type=str, required=True,
@@ -95,31 +95,24 @@ class orphane():
             check = False
     
     def scan(self,item):
-        
-        if not self.rate_limit:
-            check_url = f"https://api.github.com/repos/{self.repo}/commits/{item}"
-            req = requests.get(check_url, headers=self.header_add)
-            if req.status_code == 200:
-                print("found")
-                try:
-                    json_data = req.json()
-                    sha_orphaned_commit = json_data['sha']
-                    author = json_data['commit']['author']
-                    files = json_data['files']
-                    if sha_orphaned_commit not in self.commit_check:
-                        print(f"Orphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}")
-                        self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n File information: \n {files} \n -------------------\n"
-                except:
-                    pass
-            if req.status_code == 403 or req.status_code == 429:
-                print("You have been rate limited by Github.")
-                self.rate_limit = True
-                with open(self.args.output, 'w') as file:
-                    file.write(self.output_data)
-                sys.exit()
-
+        check_url = f"https://api.github.com/repos/{self.repo}/commits/{item}"
+        req = requests.get(check_url, headers=self.header_add)
+        if req.status_code == 200:
+            print("found")
+            try:
+                json_data = req.json()
+                sha_orphaned_commit = json_data['sha']
+                author = json_data['commit']['author']
                 
-            bar.next()
+                if sha_orphaned_commit not in self.commit_check:
+                    print(f"Orphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}")
+                    self.output_data += f"-------------------\nOrphaned Commit Identified: https://github.com/{self.repo}/commit/{sha_orphaned_commit}\n Author information: {author}\n-------------------\n"
+            except:
+                pass
+        if req.status_code == 403 or req.status_code == 429:
+            print("You have been rate limited by Github. Sleeping for 30 seconds")
+            sleep(30)                        
+        bar.next()
 
 
     check_list = []
@@ -137,8 +130,8 @@ class orphane():
               
         print(self.GREEN + self.marantral + self.ENDC)
         bar = IncrementalBar('Scanning for Orphaned Commits:', max=65536)
-        with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
-            executor.map(self.scan, self.check_list[self.args.line:])
+        for item in self.check_list[self.args.line:]:
+            self.scan(item)
         bar.finish()
         with open(self.args.output, 'w') as file:
             file.write(self.output_data)
