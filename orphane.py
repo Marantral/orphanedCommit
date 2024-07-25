@@ -6,7 +6,7 @@ import os
 import argparse
 from progress.bar import IncrementalBar
 from datetime import datetime 
-
+import sys
 
 
 ini_file = configparser.ConfigParser()
@@ -112,7 +112,7 @@ class orphane():
             if req.status_code == 403 or req.status_code == 429:
                 print("You have been rate limited by Github.")
                 self.rate_limit = True
-                exit()
+                sys.exit()
 
                 
             bar.next()
