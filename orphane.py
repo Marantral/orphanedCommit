@@ -4,7 +4,7 @@ import json
 import configparser
 import os
 import argparse
-from tqdm import tqdm
+from progress.bar import IncrementalBar
 from datetime import datetime 
 
 
@@ -72,6 +72,7 @@ class orphane():
             check = False
     
     def scan(self,item):
+        bar.next()
         check_url = f"https://api.github.com/repos/{self.repo}/commits/{item}"
         req = requests.get(check_url, headers=self.header_add)
         if req.status_code == 200:
@@ -92,14 +93,17 @@ class orphane():
                 if current not in check_list:
                     check_list.append(current)
     def main(self):
+        global bar
+
+        bar = IncrementalBar('Deep Scanning Subdomains:', max=len(65536))
         print(self.BOLD + self.ERROR + r"""
-               #####   ######   ######   ##   ##   ######  ######   #######  ######              ####    #####   ### ##   ### ##    ####     ######  
-              #######  #######  #######  ##   ##  #######  #######  #######  #######            ######  #######  #######  #######    ##      ######  
-              ### ###  ### ###  ##   ##  ##  ###  ###  ##  ## ####  ##   #   ##  ###           ### ###  ### ###  #######  #######    ##      # ## #  
-              ##   ##  ##  ##   ##  ##   #######  ##   ##  ##  ###  ####     ##   ##           ##   #   ##   ##  ## # ##  ## # ##    ##        ##    
-              ##   ##  ## ##    ####     ### ###  ## ####  ##  ###  ##       ##   ##           ##       ##   ##  ## # ##  ## # ##    ##        ##    
-              ### ###  ##  ##   ##  #    ##   ##  ##   ##  ##  ##   ##   ##  ##   ##            ##  ##  ### ###  ##   ##  ##   ##   ####       ##    
-               #####   ##   ##  ##       ##  ###   ##  ##  ##  ###  #######  ######              ####    #####   ##   ##  ##   ##   ####       ##    
+ #####   ######   ######   ##   ##   ######  ######   #######  ######              ####    #####   ### ##   ### ##    ####     ######  
+#######  #######  #######  ##   ##  #######  #######  #######  #######            ######  #######  #######  #######    ##      ######  
+### ###  ### ###  ##   ##  ##  ###  ###  ##  ## ####  ##   #   ##  ###           ### ###  ### ###  #######  #######    ##      # ## #  
+##   ##  ##  ##   ##  ##   #######  ##   ##  ##  ###  ####     ##   ##           ##   #   ##   ##  ## # ##  ## # ##    ##        ##    
+##   ##  ## ##    ####     ### ###  ## ####  ##  ###  ##       ##   ##           ##       ##   ##  ## # ##  ## # ##    ##        ##    
+### ###  ##  ##   ##       ##   ##  ##   ##  ##  ##   ##   ##  ##   ##            ##  ##  ### ###  ##   ##  ##   ##   ####       ##    
+ #####   ##   ##  ##       ##  ###   ##  ##  ##  ###  #######  ######              ####    #####   ##   ##  ##   ##   ####       ##    
                                                                                                                                        
                 """ + self.ENDC)
               
@@ -122,10 +126,11 @@ class orphane():
                                         Version 1.0
         """ + self.ENDC)
         with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
-            results = list(tqdm(executor.map(self.scan, self.check_list), total=len(65536)))
+            executor.map(self.scan, self.check_list)
+        bar.finish()
         with open(self.args.output, 'w') as file:
             file.write(self.output_data)
-        return results
+        
     
        
 
