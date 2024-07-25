@@ -97,7 +97,6 @@ class orphane():
         check_url = f"https://api.github.com/repos/{self.repo}/commits/{item}"
         req = requests.get(check_url, headers=self.header_add)
         if req.status_code == 200:
-            print("found")
             try:
                 json_data = req.json()
                 sha_orphaned_commit = json_data['sha']
@@ -115,7 +114,7 @@ class orphane():
             sleep(120)
             with open(self.args.output, 'w') as file:
                 file.write(self.output_data) 
-        if req.headers['X-RateLimit-Remaining'] <= 50:
+        if 50 >= req.headers['X-RateLimit-Remaining']:
             print("Rate limiting is about to be active! Sleeping for 1 minute!")
             sleep(60)                    
         bar.next()
