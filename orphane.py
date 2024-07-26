@@ -6,6 +6,7 @@ import argparse
 from progress.bar import IncrementalBar
 from datetime import datetime 
 from time import sleep 
+import time
 
 
 ini_file = configparser.ConfigParser()
@@ -60,6 +61,8 @@ class orphane():
                         help="Output file name")
     parser.add_argument('--line', '-l', type=int, default=0,
                         help="Line last looked at within last search.")
+    parser.add_argument('--fast', '-f', default=False, action="store_true",
+                        help="Use multi-threading to go fast. This will cause rate limiting to occur faster requiring a sleep.")
     args = parser.parse_args()
     repo = args.repo 
     header_add = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36", "Authorization": f"Bearer {api_token}"
@@ -117,8 +120,10 @@ class orphane():
             with open(self.args.output, 'w') as file:
                 file.write(self.output_data) 
         if 50 >= int(req.headers['X-RateLimit-Remaining']):
-            print("Rate limiting is about to be active! Sleeping for 1 minute!")
-            sleep(60)                    
+            sleep_time = int(req.headers['x-ratelimit-reset']) - time.time()
+            print(f"Rate limiting is about to be active! Sleeping until ratelimit resets! Which is: {str(sleep_time)} seconds")
+            sleep_time = int(req.headers['x-ratelimit-reset']) - time.time()
+            sleep(sleep_time)                    
         bar.next()
 
 
@@ -137,8 +142,13 @@ class orphane():
               
         print(self.GREEN + self.marantral + self.ENDC)
         bar = IncrementalBar('Scanning for Orphaned Commits:', max=65536)
-        for item in self.check_list[self.args.line:]:
-            self.scan(item)
+        
+        if self.args.fast:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
+                executor.map(self.scan, self.check_list)
+        else:
+            for item in self.check_list[self.args.line:]:
+                self.scan(item)
         bar.finish()
         with open(self.args.output, 'w') as file:
             file.write(self.output_data)
