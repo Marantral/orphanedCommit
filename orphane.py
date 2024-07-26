@@ -53,6 +53,7 @@ class orphane():
             !!!!!!!!!!!GO GET SOME COFFEE, THIS WILL TAKE A WHILE!!!!!!!!!!!
         """ 
     output_data = ''
+    print(GREEN + "!!!!!!!!! BUILDING LISTS !!!!!!!!!" + ENDC)
     current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     parser = argparse.ArgumentParser(description='Github Orphaned Enumeration tool')
     parser.add_argument('--repo', '-r', dest="repo", type=str, required=True,
