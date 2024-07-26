@@ -115,14 +115,15 @@ class orphane():
             except:
                 pass
         if req.status_code == 403 or req.status_code == 429:
-            print("\n\nYou have been rate limited by Github. Sleeping for 2 Minutes-----\n\n")
-            sleep(120)
+            sleep_time = int(req.headers['x-ratelimit-reset']) - time.time()
+            print(f"\n\nYou have been rate limited by Github. Sleeping until ratelimit resets! Which is: {str(sleep_time)} seconds"\n\n")
+            sleep(sleep_time)
             with open(self.args.output, 'w') as file:
                 file.write(self.output_data) 
         if 50 >= int(req.headers['X-RateLimit-Remaining']):
             sleep_time = int(req.headers['x-ratelimit-reset']) - time.time()
             print(f"Rate limiting is about to be active! Sleeping until ratelimit resets! Which is: {str(sleep_time)} seconds")
-            sleep_time = int(req.headers['x-ratelimit-reset']) - time.time()
+            
             sleep(sleep_time)                    
         bar.next()
 
