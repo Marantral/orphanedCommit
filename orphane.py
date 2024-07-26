@@ -122,7 +122,7 @@ class orphane():
                 file.write(self.output_data) 
         if 50 >= int(req.headers['X-RateLimit-Remaining']):
             sleep_time = int(req.headers['x-ratelimit-reset']) - time.time()
-            print(f"Rate limiting is about to be active! Sleeping until ratelimit resets! Which is: {str(sleep_time)} seconds")
+            print(f"\n\nRate limiting is about to be active! Sleeping until ratelimit resets! Which is: {str(sleep_time)} seconds")
             
             sleep(sleep_time)                    
         bar.next()
