@@ -8,3 +8,5 @@ Orphaned Commit Identification
 
 ## Run 
 ```python3 ./orphane.py -r 'marantral/test' -o "marantraloutput.txt"```
+- To Go Faster:
+```python3 ./orphane.py -r 'marantral/test' -f -o "marantraloutput.txt"```
