@@ -89,5 +89,3 @@ Please open an issue for bugs, questions, or feature requests.
 MIT License
 
 ---
-
-Do you want to add a project description, usage tips, or links to related resources? Let me know if you’d like this template tailored further or want it formatted for direct commit.
